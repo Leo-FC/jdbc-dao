@@ -52,17 +52,9 @@ public class VendedorDaoJDBC implements VendedorDao {
 
             // esse if é para testar se veio algum resultado
             if(rs.next()){
-                Departamento dep = new Departamento();
-                dep.setId(rs.getInt("DepartmentId"));
-                dep.setNome(rs.getString("DepName"));
+                Departamento dep = instantiateDepartamento(rs);
 
-                Vendedor obj = new Vendedor();
-                obj.setId(rs.getInt("Id"));
-                obj.setNome(rs.getString("Name"));
-                obj.setEmail(rs.getString("Email"));
-                obj.setSalarioBase(rs.getDouble("BaseSalary"));
-                obj.setDataNascimento(rs.getDate("BirthDate"));
-                obj.setDepartamento(dep);
+                Vendedor obj = instantiateVendedor(rs, dep);
 
                 return obj;
             }
@@ -79,5 +71,23 @@ public class VendedorDaoJDBC implements VendedorDao {
     @Override
     public List<Vendedor> findAll() {
         return List.of();
+    }
+
+    private Departamento instantiateDepartamento(ResultSet rs) throws SQLException{
+        Departamento dep = new Departamento();
+        dep.setId(rs.getInt("DepartmentId"));
+        dep.setNome(rs.getString("DepName"));
+        return dep;
+    }
+
+    private Vendedor instantiateVendedor(ResultSet rs, Departamento dep) throws SQLException{
+        Vendedor obj = new Vendedor();
+        obj.setId(rs.getInt("Id"));
+        obj.setNome(rs.getString("Name"));
+        obj.setEmail(rs.getString("Email"));
+        obj.setSalarioBase(rs.getDouble("BaseSalary"));
+        obj.setDataNascimento(rs.getDate("BirthDate"));
+        obj.setDepartamento(dep);
+        return obj;
     }
 }
