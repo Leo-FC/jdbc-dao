@@ -5,6 +5,7 @@ import model.dao.VendedorDao;
 import model.entities.Departamento;
 import model.entities.Vendedor;
 
+import java.sql.Date;
 import java.util.List;
 
 public class Program {
@@ -24,5 +25,14 @@ public class Program {
         List<Vendedor> listaVendedoresTodos = vendedorDao.findAll();
         listaVendedoresTodos.forEach(System.out::println);
 
+        System.out.println("\n=== Teste 4: vendedor insert: ===");
+        Vendedor novoVendedor = new Vendedor(null,
+                "Michael de Santa",
+                "michaeltownley@gmail.com",
+                Date.valueOf("1968-10-4"),
+                4000.0,
+                new Departamento(1, null));
+
+        vendedorDao.insert(novoVendedor);
     }
 }

@@ -6,10 +6,7 @@ import model.dao.VendedorDao;
 import model.entities.Departamento;
 import model.entities.Vendedor;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +22,37 @@ public class VendedorDaoJDBC implements VendedorDao {
 
     @Override
     public void insert(Vendedor obj) {
+        PreparedStatement pst = null;
 
+        try{
+            pst = conn.prepareStatement( "INSERT into seller "
+            + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+            + "VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            pst.setString(1, obj.getNome());
+            pst.setString(2, obj.getEmail());
+            pst.setDate(3, new java.sql.Date(obj.getDataNascimento().getTime()));
+            pst.setDouble(4, obj.getSalarioBase());
+            pst.setInt(5, obj.getDepartamento().getId());
+
+            int qtdLinhasAfetadas = pst.executeUpdate();
+
+            // a logica implementada abaixo serve para inserir um novo id automaticamente ao novo vendedor inserido no bd
+            if(qtdLinhasAfetadas > 0){
+                ResultSet rs = pst.getGeneratedKeys();
+                if (rs.next()){
+                    int id = rs.getInt(1);
+                    obj.setId(id);
+                }
+                DB.closeResultSet(rs);
+            }else {
+                throw new DbException("Erro. Nenhuma linha foi afetada.");
+            }
+
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(pst);
+        }
     }
 
     @Override
