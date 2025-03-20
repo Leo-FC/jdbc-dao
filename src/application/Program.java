@@ -17,9 +17,12 @@ public class Program {
 
         System.out.println("\n=== Teste 2: vendedor findByDepartamento: ===");
         Departamento departamento = new Departamento(2, null);
-        List<Vendedor> listaVendedores = vendedorDao.findByDepartamento(departamento);
-        listaVendedores.forEach(System.out::println);
+        List<Vendedor> listaVendedoresDepartamento = vendedorDao.findByDepartamento(departamento);
+        listaVendedoresDepartamento.forEach(System.out::println);
 
+        System.out.println("\n=== Teste 3: vendedor findAll: ===");
+        List<Vendedor> listaVendedoresTodos = vendedorDao.findAll();
+        listaVendedoresTodos.forEach(System.out::println);
 
     }
 }

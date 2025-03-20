@@ -89,7 +89,6 @@ public class VendedorDaoJDBC implements VendedorDao {
             Map<Integer, Departamento> map = new HashMap<>();
 
             while(rs.next()){
-
                 // Verificando se ha algum departamento com o ID solicitado, caso nao haja o map.get vai retornar null
                 // e se for null, ai sim o departamento sera instanciado
                 Departamento dep = map.get(rs.getInt("DepartmentId"));
@@ -116,7 +115,37 @@ public class VendedorDaoJDBC implements VendedorDao {
 
     @Override
     public List<Vendedor> findAll() {
-        return List.of();
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        try{
+            pst = conn.prepareStatement(
+                    "SELECT sl.*, dp.DepName"
+                            + " FROM seller sl"
+                            + " INNER JOIN department dp ON sl.DepartmentId = dp.id");
+
+            rs = pst.executeQuery();
+
+            List<Vendedor> vendedores = new ArrayList<>();
+            Map<Integer, Departamento> map = new HashMap<>();
+
+            while(rs.next()){
+                Departamento dep = map.get(rs.getInt("DepartmentId"));
+                if(dep == null){
+                    dep = instantiateDepartamento(rs);
+                    map.put(rs.getInt("DepartmentId"), dep);
+                }
+                Vendedor obj = instantiateVendedor(rs, dep);
+                vendedores.add(obj);
+            }
+            return vendedores;
+
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(pst);
+            DB.closeResultSet(rs);
+        }
     }
 
     private Departamento instantiateDepartamento(ResultSet rs) throws SQLException{
