@@ -25,6 +25,7 @@ public class Program {
         List<Vendedor> listaVendedoresTodos = vendedorDao.findAll();
         listaVendedoresTodos.forEach(System.out::println);
 
+
         System.out.println("\n=== Teste 4: vendedor insert: ===");
         Vendedor novoVendedor = new Vendedor(null,
                 "Michael de Santa",
@@ -33,6 +34,13 @@ public class Program {
                 4000.0,
                 new Departamento(1, null));
 
-        vendedorDao.insert(novoVendedor);
+        //vendedorDao.insert(novoVendedor);
+
+        System.out.println("\n=== Teste 5: vendedor update: ===");
+        Vendedor atualizarVendedor = vendedorDao.findById(1);
+        atualizarVendedor.setNome("Tommy Vercetti");
+        atualizarVendedor.setEmail("tomver@gmail.com");
+        vendedorDao.update(atualizarVendedor);
+
     }
 }
