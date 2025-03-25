@@ -7,9 +7,11 @@ import model.entities.Vendedor;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Scanner;
 
 public class Program {
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
 
         System.out.println("=== Teste 1: vendedor findById: ===");
         VendedorDao vendedorDao = DaoFactory.createVendedorDao();
@@ -41,6 +43,11 @@ public class Program {
         atualizarVendedor.setNome("Tommy Vercetti");
         atualizarVendedor.setEmail("tomver@gmail.com");
         vendedorDao.update(atualizarVendedor);
+
+        System.out.println("\n=== Teste 6: vendedor delete by id: ===");
+        System.out.println("Informe o ID do vendedor que voce deseja deletar do banco de dados:");
+        int id = sc.nextInt();
+        vendedorDao.deleteById(id);
 
     }
 }
