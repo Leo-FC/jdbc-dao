@@ -46,7 +46,20 @@ public class DepartamentoDaoJDBC implements DepartamentoDao {
 
     @Override
     public void update(Departamento obj) {
+        PreparedStatement pst = null;
 
+        try{
+            pst = conn.prepareStatement("UPDATE department SET DepName = ? WHERE id = ?");
+            pst.setString(1, obj.getNome());
+            pst.setInt(2, obj.getId());
+
+            pst.executeUpdate();
+
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(pst);
+        }
     }
 
     @Override
@@ -56,11 +69,36 @@ public class DepartamentoDaoJDBC implements DepartamentoDao {
 
     @Override
     public Departamento findById(Integer id) {
-        return null;
+        PreparedStatement pst = null;
+        ResultSet rs = null;
+
+        try{
+            pst = conn.prepareStatement("SELECT * from department WHERE id = ?");
+            pst.setInt(1, id);
+            rs = pst.executeQuery();
+
+            if(rs.next()){
+                Departamento dep = instantiateDepartamento(rs);
+                return dep;
+            }
+            return null;
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(pst);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
     public List<Departamento> findAll() {
         return List.of();
+    }
+
+    private Departamento instantiateDepartamento(ResultSet rs) throws SQLException{
+        Departamento dep = new Departamento();
+        dep.setId(rs.getInt("Id"));
+        dep.setNome(rs.getString("DepName"));
+        return dep;
     }
 }
