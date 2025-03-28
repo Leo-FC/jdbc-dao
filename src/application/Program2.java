@@ -21,6 +21,9 @@ public class Program2 {
         atualizarDepartamento.setNome("Music");
         departamentoDao.update(atualizarDepartamento);
 
+        System.out.println("=== Teste 4: departament deleteById: ===");
+        //departamentoDao.deleteById(8);
+
 
 
     }

@@ -64,7 +64,25 @@ public class DepartamentoDaoJDBC implements DepartamentoDao {
 
     @Override
     public void deleteById(Integer id) {
+        PreparedStatement pst = null;
 
+        try{
+            // Exclui o vendedor associado ao departamento antes de excluir o departamento
+            // poderia ser feito da seguinte forma : transformar o departmentid do vendedor em nulo (se o bd permitir)
+            // e em seguida excluir o departamento, para nao perder os dados do(s) vendedor(es) em questao
+            pst = conn.prepareStatement("DELETE FROM seller WHERE DepartmentId = ?");
+            pst.setInt(1, id);
+            pst.executeUpdate();
+
+            pst = conn.prepareStatement("DELETE FROM department WHERE Id = ?");
+            pst.setInt(1, id);
+            pst.executeUpdate();
+
+        }catch (SQLException e){
+            throw new DbException(e.getMessage());
+        }finally {
+            DB.closeStatement(pst);
+        }
     }
 
     @Override
